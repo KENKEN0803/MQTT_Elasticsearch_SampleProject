@@ -1,0 +1,8 @@
+es:
+  url: localhost
+  port: 9200
+mqtt:
+  userName: kenken
+  password: 1111
+  serverURI: tcp://localhost
+  clientId: jhl0803
