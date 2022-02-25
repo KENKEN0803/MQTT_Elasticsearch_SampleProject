@@ -18,14 +18,14 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Configuration
+@Service
 public class ElasticSearchService {
 
     private static RestHighLevelClient client;
@@ -43,6 +43,17 @@ public class ElasticSearchService {
         return new RestHighLevelClient(RestClient.builder(new HttpHost(hostname, port, "http")));
     }
 
+    public void createIndex(String indexName) throws IOException {
+
+        CreateIndexRequest request = new CreateIndexRequest(indexName);
+
+        request.settings(Settings.builder()
+                .put("index.number_of_shards", 1)
+                .put("index.number_of_replicas", 0)
+        );
+
+        client.indices().create(request, RequestOptions.DEFAULT);
+    }
 
     public void createDocument(String index, String id, String jsonBody) throws IOException {
         IndexRequest request = new IndexRequest(index)
@@ -57,18 +68,6 @@ public class ElasticSearchService {
         return client.get(request, RequestOptions.DEFAULT);
     }
 
-    public void createIndex(String indexName) throws IOException {
-
-        CreateIndexRequest request = new CreateIndexRequest(indexName);
-
-        request.settings(Settings.builder()
-                .put("index.number_of_shards", 1)
-                .put("index.number_of_replicas", 0)
-        );
-
-        client.indices().create(request, RequestOptions.DEFAULT);
-    }
-
     public List<Map<String, Object>> searchDocument(String index, String searchParam) throws IOException {
 
         List<Map<String, Object>> list = new ArrayList<>();
@@ -79,11 +78,8 @@ public class ElasticSearchService {
         BoolQueryBuilder query = QueryBuilders.boolQuery();
 
         searchRequest.indices(index); // 찾을 인덱스 지정
-
         query.must(QueryBuilders.matchQuery("msg", searchParam));
-
         searchSourceBuilder.query(query);
-
         searchRequest.source(searchSourceBuilder);
 
         try {
