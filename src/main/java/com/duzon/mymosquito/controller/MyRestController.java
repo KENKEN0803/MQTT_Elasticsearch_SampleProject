@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @org.springframework.web.bind.annotation.RestController
@@ -51,14 +53,12 @@ public class MyRestController {
         return null;
     }
 
-    @GetMapping(value = "/getHistory")
+    @GetMapping(value = "/getDocument")
     public Map<String, Object> getHistory(@RequestParam String index, @RequestParam String id) {
 
-        System.out.println("getHistory => " + index + id);
+        System.out.println("getDocument => " + index + id);
 
         Map<String, Object> resMap = null;
-
-
 
         try {
             resMap = elasticSearchService.getDocument(index, id)
@@ -68,6 +68,26 @@ public class MyRestController {
         }
 
         return resMap;
+    }
+
+    @GetMapping(value = "/search")
+    public List<Map<String, Object>> search(HttpServletResponse response,
+                                            @RequestParam String index,
+                                            @RequestParam String searchParam) {
+
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        System.out.println("search index => " + index);
+        System.out.println("searchParam => " + searchParam);
+
+        try {
+            list = elasticSearchService.searchDocument(index, searchParam);
+        } catch (IOException e) {
+            e.printStackTrace();
+            response.setStatus(500);
+        }
+
+        return list;
     }
 
 }

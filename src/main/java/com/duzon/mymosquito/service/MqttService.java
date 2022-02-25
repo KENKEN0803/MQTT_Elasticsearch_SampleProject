@@ -37,7 +37,7 @@ public class MqttService implements MqttCallback {
 
     @Override
     public void connectionLost(Throwable throwable) {
-        System.out.println("connectionLost");
+        System.out.println("======================= connectionLost");
         throwable.printStackTrace();
     }
 
@@ -48,6 +48,7 @@ public class MqttService implements MqttCallback {
         long startTime = System.currentTimeMillis();
         String msg = new String(mqttMessage.getPayload(), StandardCharsets.UTF_8);
 
+        System.out.println("======================= messageArrived");
         System.out.println(topic);
         System.out.println(msg);
 
@@ -65,8 +66,12 @@ public class MqttService implements MqttCallback {
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-        System.out.println("deliveryComplete");
-        System.out.println(iMqttDeliveryToken);
+        System.out.println("======================= deliveryComplete");
+        try {
+            System.out.println(iMqttDeliveryToken.getMessage());
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean subscribe(String... topics) {
@@ -76,6 +81,7 @@ public class MqttService implements MqttCallback {
                     client.subscribe(topic, 0);
                 }
             }
+            System.out.println("======================= MQTT Subscribe SUCCESS");
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -87,6 +93,7 @@ public class MqttService implements MqttCallback {
         MqttMessage message = new MqttMessage();
         message.setPayload(msg.getBytes());
         client.publish(topic, message);
+        System.out.println("======================= MQTT Publish SUCCESS");
     }
 
 }
