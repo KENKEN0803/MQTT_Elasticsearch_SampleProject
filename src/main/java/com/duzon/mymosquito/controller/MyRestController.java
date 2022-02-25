@@ -2,6 +2,7 @@ package com.duzon.mymosquito.controller;
 
 import com.duzon.mymosquito.service.ElasticSearchService;
 import com.duzon.mymosquito.service.MqttService;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +25,30 @@ public class MyRestController {
     @PostMapping(value = "/setTopic")
     @ResponseBody
     public Map<String, Object> setTopic(@RequestBody Map<String, Object> paramMap) {
-
-        String select = (String) paramMap.get("topic");
-
         System.out.println("setTopic => " + paramMap);
 
-        mqttService.subscribe(select);
+        String topic = (String) paramMap.get("topic");
+
+        mqttService.subscribe(topic);
+
+        return null;
+    }
+
+    @PostMapping(value = "/send")
+    @ResponseBody
+    public Map<String, Object> send(HttpServletResponse response,
+                                    @RequestBody Map<String, Object> paramMap) {
+        System.out.println("send => " + paramMap);
+
+        String topic = (String) paramMap.get("topic");
+        String msg = (String) paramMap.get("msg");
+
+        try {
+            mqttService.sender(topic, msg);
+        } catch (MqttException e) {
+            response.setStatus(500);
+            e.printStackTrace();
+        }
 
         return null;
     }

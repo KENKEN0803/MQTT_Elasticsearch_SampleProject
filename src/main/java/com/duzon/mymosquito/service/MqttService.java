@@ -7,9 +7,9 @@ import java.util.HashMap;
 import org.eclipse.paho.client.mqttv3.*;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class MqttService implements MqttCallback {
 
     @Autowired
