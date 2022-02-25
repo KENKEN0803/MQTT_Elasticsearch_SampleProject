@@ -86,15 +86,6 @@ public class ElasticSearchService {
 
         searchRequest.source(searchSourceBuilder);
 
-//        SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
-//        SearchHit[] results = response.getHits().getHits();
-
-//                new SearchRequest(index)
-//                        .source(new SearchSourceBuilder(
-//                                QueryBuilders.boolQuery()
-//                                        .must(QueryBuilders.termQuery("msg", searchParam))
-//                        ));
-
         try {
             SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
             SearchHits searchHits = response.getHits();
