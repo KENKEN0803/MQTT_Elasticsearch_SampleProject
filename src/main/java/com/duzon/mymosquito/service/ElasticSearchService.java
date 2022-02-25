@@ -38,7 +38,7 @@ public class ElasticSearchService {
 
     @Bean
     public RestHighLevelClient restHighLevelClient() {
-        this.client = new RestHighLevelClient(RestClient.builder(new HttpHost(hostname, port, "http")));
+        client = new RestHighLevelClient(RestClient.builder(new HttpHost(hostname, port, "http")));
         System.out.println("======================= SearchEngine connected at " + hostname + port);
         return new RestHighLevelClient(RestClient.builder(new HttpHost(hostname, port, "http")));
     }

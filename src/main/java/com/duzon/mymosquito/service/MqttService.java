@@ -58,7 +58,7 @@ public class MqttService implements MqttCallback {
         JSONObject json = new JSONObject(jsonBody);
 
         try {
-            elasticSearchService.createDocument(topic, String.valueOf(startTime), json.toJSONString());
+            elasticSearchService.createDocument(topic, "received message " + startTime, json.toJSONString());
         } catch (IOException e) {
             e.printStackTrace();
         }
