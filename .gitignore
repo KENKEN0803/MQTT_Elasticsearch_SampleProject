@@ -1,4 +1,4 @@
-HELP.md
+README.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -31,3 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
+/jhl0803-tcplocalhost/.lck
+/jhl0803-tcplocalhost1883/.lck

@@ -33,7 +33,7 @@ public class MyRestController {
     }
 
 
-    @PostMapping(value = "/createIndex")
+    @PutMapping(value = "/createIndex")
     @ResponseBody
     public Map<String, Object> createIndex(HttpServletResponse response,
                                            @RequestBody Map<String, Object> paramMap) {
@@ -57,6 +57,8 @@ public class MyRestController {
         System.out.println("getHistory => " + index + id);
 
         Map<String, Object> resMap = null;
+
+
 
         try {
             resMap = elasticSearchService.getDocument(index, id)
