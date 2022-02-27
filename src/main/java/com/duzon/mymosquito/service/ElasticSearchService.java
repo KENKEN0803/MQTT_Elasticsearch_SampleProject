@@ -1,6 +1,7 @@
 package com.duzon.mymosquito.service;
 
 import org.apache.http.HttpHost;
+import org.elasticsearch.ElasticsearchParseException;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
@@ -14,6 +15,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,18 +70,29 @@ public class ElasticSearchService {
         return client.get(request, RequestOptions.DEFAULT);
     }
 
-    public List<Map<String, Object>> searchDocument(String index, String searchParam) throws IOException {
+    public List<Map<String, Object>> searchDocument(String index, String searchParam, String searchOption)
+            throws Exception {
 
         List<Map<String, Object>> list = new ArrayList<>();
-
         SearchRequest searchRequest = new SearchRequest();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
-        BoolQueryBuilder query = QueryBuilders.boolQuery();
-
         searchRequest.indices(index); // 찾을 인덱스 지정
-        query.must(QueryBuilders.matchQuery("msg", searchParam));
-        searchSourceBuilder.query(query);
+
+        switch (searchOption) {
+            case "exact":
+                BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+                boolQuery.must(QueryBuilders.matchQuery("msg", searchParam));
+                searchSourceBuilder.query(boolQuery);
+                break;
+            case "wildCard":
+                WildcardQueryBuilder wildcardQuery = new WildcardQueryBuilder("msg", "*" + searchParam + "*");
+                searchSourceBuilder.query(wildcardQuery);
+                break;
+            default:
+                throw new ElasticsearchParseException("검색 옵션이 지정되지 않았습니다");
+        }
+
         searchRequest.source(searchSourceBuilder);
 
         try {

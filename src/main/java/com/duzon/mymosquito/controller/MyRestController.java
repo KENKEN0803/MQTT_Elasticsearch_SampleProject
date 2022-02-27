@@ -55,12 +55,10 @@ public class MyRestController {
 
 
     @PutMapping(value = "/createIndex")
-    @ResponseBody
     public Map<String, Object> createIndex(HttpServletResponse response,
-                                           @RequestBody Map<String, Object> paramMap) {
+                                           @RequestParam String index) {
 
-        String index = (String) paramMap.get("index");
-        System.out.println("createIndex => " + paramMap);
+        System.out.println("createIndex => " + index);
 
         try {
             elasticSearchService.createIndex(index);
@@ -92,7 +90,8 @@ public class MyRestController {
     @GetMapping(value = "/search")
     public List<Map<String, Object>> search(HttpServletResponse response,
                                             @RequestParam String index,
-                                            @RequestParam String searchParam) {
+                                            @RequestParam String searchParam,
+                                            @RequestParam String searchOption) {
 
         List<Map<String, Object>> list = new ArrayList<>();
 
@@ -100,8 +99,8 @@ public class MyRestController {
         System.out.println("searchParam => " + searchParam);
 
         try {
-            list = elasticSearchService.searchDocument(index, searchParam);
-        } catch (IOException e) {
+            list = elasticSearchService.searchDocument(index, searchParam, searchOption);
+        } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(500);
         }
